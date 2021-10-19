@@ -14,7 +14,7 @@ export const Legend = styled.legend`
   color: red;
 `;
 
-export const ThreePerRow = styled.div`
+export const FieldsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(315px, 1fr));
   grid-gap: 20px;
@@ -22,24 +22,8 @@ export const ThreePerRow = styled.div`
   & > * {
     width: auto !important;
   }
-  @media (max-width: 700px) {
+  @media (max-width: 500px) {
     grid-template-columns: repeat(auto-fill, minmax(100%, 1fr))
-  }
-`;
-
-export const TwoPerRow = styled(ThreePerRow)`
-  @media (max-width: 1070px) {
-    & > *:nth-child(3n+3) {
-      display: none;
-    }
-  }
-`;
-
-export const OnePerRow = styled(TwoPerRow)`
-  @media (max-width: 735px) {
-    & > *:nth-child(1+2n) {
-      display: none;
-    }
   }
 `;
 

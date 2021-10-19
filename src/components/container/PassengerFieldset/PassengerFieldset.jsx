@@ -2,9 +2,7 @@ import React, { useEffect } from 'react';
 import {
   Fieldset,
   Legend,
-  ThreePerRow,
-  TwoPerRow,
-  OnePerRow,
+  FieldsContainer,
   DeleteButtonContainer,
   EmergencyDesc,
 } from './styled';
@@ -75,7 +73,7 @@ const PassengerFieldset = ({
           label="Оформление билета по ФСС"
         />
         {isFSS && (
-          <OnePerRow>
+          <FieldsContainer>
             <Controller
               control={control}
               name={`${passenger}.SNILS`}
@@ -102,11 +100,10 @@ const PassengerFieldset = ({
               }}
               shouldUnregister
             />
-            <div/><div/>
-          </OnePerRow>
+          </FieldsContainer>
         )}
       </div>
-      <ThreePerRow>
+      <FieldsContainer>
         <TextInput
           {...register(`${passenger}.surname`, dependentValidators)}
           label="Фамилия"
@@ -191,7 +188,7 @@ const PassengerFieldset = ({
           <option value="default">Обычный</option>
           <option value="premium">Премиум</option>
         </Select>
-      </ThreePerRow>
+      </FieldsContainer>
       <div>
         <Checkbox
           {...register(`${passenger}.emergencyNotifications`)}
@@ -202,7 +199,7 @@ const PassengerFieldset = ({
           транспортом при покупке билета необходимо указать свои контактные данные.
         </EmergencyDesc>
         {hasEmergencyNotifications && (
-          <TwoPerRow>
+          <FieldsContainer>
             <Controller
               control={control}
               name={`${passenger}.tel`}
@@ -236,8 +233,7 @@ const PassengerFieldset = ({
               error={errors?.email?.message}
               isRequired
             />
-            <div/>
-          </TwoPerRow>
+          </FieldsContainer>
         )}
       </div>
     </Fieldset>
