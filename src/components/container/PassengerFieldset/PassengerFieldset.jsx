@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Fieldset,
   Legend,
@@ -22,14 +22,37 @@ import { faMinusSquare } from '@fortawesome/free-solid-svg-icons';
 
 countries.registerLocale(russian);
 
-const PassengerFieldset = ({ id, passengersAmount, register, control, remove, watch, errors }) => {
-  const isFSS = watch(`passengers.${id}.isFSS`);
-  const hasEmergencyNotifications = watch(`passengers.${id}.emergencyNotifications`);
+const PassengerFieldset = ({
+  id,
+  passengersAmount,
+  register,
+  control,
+  remove,
+  watch,
+  trigger,
+  errors,
+}) => {
+  const passenger = `passengers.${id}`;
+  const isFSS = watch(`${passenger}.isFSS`);
+  const hasEmergencyNotifications = watch(`${passenger}.emergencyNotifications`);
   const sharedValidators = { required: 'Обязательное поле' };
   const dependentValidators = {
     ...sharedValidators,
     required: !isFSS && sharedValidators.required,
   };
+
+  useEffect(() => {
+    const triggerDependentFields = async () => {
+      isFSS && await trigger([
+        `${passenger}.name`,
+        `${passenger}.surname`,
+        `${passenger}.gender`,
+        `${passenger}.birthDate`,
+      ]);
+    };
+    triggerDependentFields();
+  }, [isFSS, passenger, trigger]);
+
   return (
     <Fieldset>
       <Legend>Пассажир №{id+1}</Legend>
@@ -48,14 +71,14 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
       )}
       <div>
         <Checkbox
-          {...register(`passengers.${id}.isFSS`)}
+          {...register(`${passenger}.isFSS`)}
           label="Оформление билета по ФСС"
         />
         {isFSS && (
           <OnePerRow>
             <Controller
               control={control}
-              name={`passengers.${id}.SNILS`}
+              name={`${passenger}.SNILS`}
               render={({ field: { value, onChange } }) => (
                 <NumberFormat
                   value={value}
@@ -85,26 +108,26 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
       </div>
       <ThreePerRow>
         <TextInput
-          {...register(`passengers.${id}.surname`, dependentValidators)}
+          {...register(`${passenger}.surname`, dependentValidators)}
           label="Фамилия"
           error={errors?.surname?.message}
           disabled={isFSS}
           isRequired
         />
         <TextInput
-          {...register(`passengers.${id}.name`, dependentValidators)}
+          {...register(`${passenger}.name`, dependentValidators)}
           label="Имя"
           error={errors?.name?.message}
           disabled={isFSS}
           isRequired
         />
         <TextInput
-          {...register(`passengers.${id}.middlename`)}
+          {...register(`${passenger}.middlename`)}
           label="Отчество (обязательно, при наличии)"
           disabled={isFSS}
         />
         <Select
-          {...register(`passengers.${id}.gender`, dependentValidators)}
+          {...register(`${passenger}.gender`, dependentValidators)}
           label="Пол"
           error={errors?.gender?.message}
           disabled={isFSS}
@@ -116,7 +139,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
         </Select>
         <Controller
           control={control}
-          name={`passengers.${id}.birthDate`}
+          name={`${passenger}.birthDate`}
           render={({ field: { value, onChange } }) => (
             <DateInput
               value={value}
@@ -131,7 +154,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
           shouldUnregister
         />
         <Select
-          {...register(`passengers.${id}.nationality`, sharedValidators)}
+          {...register(`${passenger}.nationality`, sharedValidators)}
           label="Гражданство"
           error={errors?.nationality?.message}
           isRequired
@@ -141,7 +164,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
           ))}
         </Select>
         <Select
-          {...register(`passengers.${id}.documentType`, sharedValidators)}
+          {...register(`${passenger}.documentType`, sharedValidators)}
           label="Тип документа"
           error={errors?.documentType?.message}
           isRequired
@@ -152,13 +175,13 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
           <option value="birthСertificate">Свидетельство о рождении</option>
         </Select>
         <TextInput
-          {...register(`passengers.${id}.documentNumber`, sharedValidators)}
+          {...register(`${passenger}.documentNumber`, sharedValidators)}
           label="Номер документа"
           error={errors?.documentNumber?.message}
           isRequired
         />
         <Select
-          {...register(`passengers.${id}.tariff`, sharedValidators)}
+          {...register(`${passenger}.tariff`, sharedValidators)}
           label="Тариф"
           error={errors?.tariff?.message}
           isRequired
@@ -171,7 +194,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
       </ThreePerRow>
       <div>
         <Checkbox
-          {...register(`passengers.${id}.emergencyNotifications`)}
+          {...register(`${passenger}.emergencyNotifications`)}
           label="Согласен на получение оповещений в случаях чрезвычайных ситуаций на железнодорожном транспорте"
         />
         <EmergencyDesc>
@@ -182,7 +205,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
           <TwoPerRow>
             <Controller
               control={control}
-              name={`passengers.${id}.tel`}
+              name={`${passenger}.tel`}
               render={({ field: { value, onChange } }) => (
                 <NumberFormat
                   value={value}
@@ -207,7 +230,7 @@ const PassengerFieldset = ({ id, passengersAmount, register, control, remove, wa
               shouldUnregister
             />
             <TextInput
-              {...register(`passengers.${id}.email`, sharedValidators)}
+              {...register(`${passenger}.email`, sharedValidators)}
               type="email"
               label="E-mail пассажира"
               error={errors?.email?.message}

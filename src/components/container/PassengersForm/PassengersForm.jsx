@@ -38,6 +38,7 @@ const PassengersForm = () => {
       errors,
     },
     watch,
+    trigger,
   } = useForm({
     defaultValues: { passengers: [initPassengerData] },
   });
@@ -55,6 +56,7 @@ const PassengersForm = () => {
           control={control}
           remove={remove}
           watch={watch}
+          trigger={trigger}
           passengersAmount={fields.length}
           errors={errors.passengers?.[id]}
         />
